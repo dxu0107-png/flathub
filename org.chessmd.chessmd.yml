@@ -11,17 +11,24 @@ finish-args:
   - --device=dri
   
 modules:
-  - name: Caissa
+  - name: Stockfish
     buildsystem: simple
     subdir: src
     sources:
       - type: archive
-        url: https://github.com/Witek902/Caissa/archive/refs/tags/1.23.zip
-        sha256: 3042e0bec79f51fff158e0774eb9f91c7915cc6e52a8e6d2e1b79cf54c8d19e4
-
+        url: https://github.com/official-stockfish/Stockfish/archive/refs/tags/sf_17.1.tar.gz
+        sha256: 0cfd9396438798cc68f5c0d5fa0bb458bb8ffff7de06add841aaeace86bec1f1
+      - type: file
+        url: https://tests.stockfishchess.org/api/nn/nn-1c0000000000.nnue
+        sha256: 1c0000000000a67d629999d932d0c373f7450ce43cd12d0562868f4eaf9ae2ad
+      - type: file
+        url: https://tests.stockfishchess.org/api/nn/nn-37f18f62d772.nnue
+        sha256: 37f18f62d772f3107e1d6aaca3898c130c3c86f2ab63e6555fbbca20635a899d
     build-commands:
-      - make
-      - install -D caissa /app/engine/caissa
+      - cp ../nn-1c0000000000.nnue .
+      - cp ../nn-37f18f62d772.nnue .
+      - make build -j${FLATPAK_BUILDER_N_JOBS}
+      - install -Dm755 stockfish /app/engine/stockfish
       
   - name: chessmd-opening
     buildsystem: simple
@@ -43,9 +50,11 @@ modules:
       - -DCMAKE_BUILD_TYPE=RelWithDebInfo 
     sources:
       - type: archive
-        url: https://github.com/ChessMD/ChessMD/archive/refs/tags/v1.0.2.tar.gz
-        sha256: 777b70b2d3adbc9d10f089ce127db57f731e053f228839c23180dd9a90cb81e0
+        url: https://github.com/ChessMD/ChessMD/archive/refs/tags/v1.0.3.1.tar.gz
+        sha256: e35bd7d51e7f50fc5c2bd0b7028eb146a1c72387e836b50d5cddf186a6b8c109
+    no-make-install: true
     build-commands:
+      - install -Dm755 ChessMD /app/bin/ChessMD
       - install -D desktop/chessmd.metainfo.xml /app/share/metainfo/org.chessmd.chessmd.metainfo.xml
       - install -D desktop/chessmd.desktop /app/share/applications/org.chessmd.chessmd.desktop
       - install -D desktop/chessmd.svg /app/share/icons/hicolor/scalable/apps/org.chessmd.chessmd.svg
