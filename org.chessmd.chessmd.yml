@@ -27,8 +27,7 @@ modules:
     build-commands:
       - cp ../nn-1c0000000000.nnue .
       - cp ../nn-37f18f62d772.nnue .
-      - if [ ${FLATPAK_ARCH} == "x86_64" ]; then make build -j${FLATPAK_BUILDER_N_JOBS}; fi
-      - if [ ${FLATPAK_ARCH} == "aarch64" ]; then make build -j${FLATPAK_BUILDER_N_JOBS} ARCH=armv8; fi
+      - if [ ${FLATPAK_ARCH} == "aarch64" ]; then make build -j${FLATPAK_BUILDER_N_JOBS} ARCH=armv8; else make build -j${FLATPAK_BUILDER_N_JOBS}; fi
       - install -Dm755 stockfish /app/engine/stockfish
       
   - name: chessmd-opening
